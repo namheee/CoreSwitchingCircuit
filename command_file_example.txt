@@ -1,0 +1,13 @@
+{ 
+    "network structure file address": ".\\example_data\\links_of_KRAS_mutant_lung_cancer_cells_model.tsv",
+    "node names targeted by drug": ["MAP2K1","MAP2K2"],
+    "node names targeted by combination target": ["PIN1"],
+    "phenotype node names": ["Proliferation", "Apoptosis"],
+    "average node activity profile address": {
+        "nominal": ".\\example_data\\average_node_activity_profile_for_KRAS_ON.tsv",
+        "drug only": ".\\example_data\\average_node_activity_profile_for_KRAS_ON_MEKi.tsv",
+        "combination target only": ".\\example_data\\average_node_activity_profile_for_KRAS_ON_PIN1_OFF.tsv",
+        "drug and combination target": ".\\example_data\\average_node_activity_profile_for_KRAS_ON_MEKi_PIN1_OFF.tsv"
+     },
+    "save address": ".\\result.txt"
+}
