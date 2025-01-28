@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 
 from Edge_weight_and_feedback_score_module import get_links_with_positive_edge_weight
 
@@ -24,8 +25,76 @@ def get_initially_perturbred_region_for_perturbation(links,
     return initially_perturbed_region
 
 
+def find_downstream_nodes_and_max_edge_weights(edges_dict, start_nodes):
+    """
+    Finds downstream nodes from the given start nodes and prints the maximum edge weight used at each step.
+    
+    :param edges_dict: A dictionary where keys are edges (source, sign, target), and values are edge weights.
+                       Key format: (source, sign, target)
+    :param start_nodes: A set of source node names to start the traversal from.
+    """
+    current_nodes = set(start_nodes)  # Nodes to explore in the current step
+    visited_edges = set()  # Track visited edges to avoid reprocessing
 
+    Max_weights = []
+    
+    while current_nodes:
+        downstream_nodes = set()  # Nodes discovered in this step
+        max_weight = float('-inf')  # Maximum weight in the current step
+        
+        for (source, sign, target), weight in edges_dict.items():
+            if source in current_nodes and (source, sign, target) not in visited_edges:
+                downstream_nodes.add(target)  # Add connected downstream node
+                visited_edges.add((source, sign, target))  # Mark edge as visited
+                max_weight = max(max_weight, weight)  # Update the maximum weight
+        
+        if downstream_nodes:
+            Max_weights.append(max_weight)
+        else:
+            break
+        
+        # Move to the next step
+        current_nodes = downstream_nodes
+    
+    return Max_weights
 
+def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_perturbation,
+                                                          profile_after_perturbation1, profile_after_perturbation2,
+                                                          perturbed_nodes1, perturbed_nodes2):
+    linkswithpositiveedgeweight_edgeweight_map1 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation1)
+    linkswithpositiveedgeweight_edgeweight_map2 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation2)
+
+    max_weights1 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map1, perturbed_nodes1)
+    max_weights2 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map2, perturbed_nodes2)
+
+    name_of_perturbation1 = "perturb node(s) {}".format(','.join(perturbed_nodes1))
+    name_of_perturbation2 = "perturb node(s) {}".format(','.join(perturbed_nodes2))
+    # Create x values (indices)
+    x1 = range(len(max_weights1))
+    x2 = range(len(max_weights2))
+
+    # Create the plot
+    plt.figure(figsize=(8, 6))
+
+    # Plot the first line graph
+    plt.plot(x1, max_weights1, marker='o', linestyle='-', color='blue', label=name_of_perturbation1)
+
+    # Plot the second line graph
+    plt.plot(x2, max_weights2, marker='s', linestyle='--', color='red', label=name_of_perturbation2)
+
+    # Add labels and title
+    plt.xlabel("Depth", fontsize=12)
+    plt.ylabel("Max edge weight", fontsize=12)
+    plt.title("Comparison of Max edge weights \nfor drug and combination target", fontsize=16)
+
+    # Add legend
+    plt.legend(fontsize=12)
+
+    # Add grid
+    plt.grid(True, linestyle='--', alpha=0.7)
+
+    # Show the plot
+    plt.show()
 
 
     

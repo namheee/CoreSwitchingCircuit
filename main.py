@@ -26,8 +26,13 @@ def calculate_core_switching_circuit(argv):
 
     links_positiveedgeweight_map = get_links_with_positive_edge_weight(links, profile_nominal, profile_drug_and_comb_target)
 
+    print("The graph below shows the max weights of the edges forming the downstream of the drug target when only the drug target was processed, and the max weights of the edges forming the downstream of the combination target when only the combination target was processed.")
+    trace_max_edge_weights_for_initially_perturbed_region(links, profile_nominal,
+                                                          profile_drug_only, profile_comb_target_only,
+                                                          list(target_nodes_of_drug), list(target_nodes_of_comb))
     while True:
         print("Please set the edge weight threshold to determine initially perturbed region.\nThe range is between 0 and 1. Once you enter a value,\nthe expected initially perturbed region will be displayed.")
+        print("I recommend setting the edge weight threshold for the initially perturbed region to satisfy the section where the drop in max weight between the two line graphs of the graph is large across the Depth.")
         threshold_for_initially_perturbed_region = float(input())
         print("Regarding {}, the expected initially perturbed retion is as follows.".format(','.join(list(target_nodes_of_drug))))
         initially_perturbed_region_for_drug_only = get_initially_perturbred_region_for_perturbation(links, 
