@@ -58,34 +58,100 @@ def find_downstream_nodes_and_max_edge_weights(edges_dict, start_nodes):
     
     return Max_weights
 
+# def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_perturbation,
+#                                                           profile_after_perturbation1, profile_after_perturbation2,
+#                                                           perturbed_nodes1, perturbed_nodes2):
+#     linkswithpositiveedgeweight_edgeweight_map1 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation1)
+#     linkswithpositiveedgeweight_edgeweight_map2 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation2)
+
+#     max_weights1 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map1, perturbed_nodes1)
+#     max_weights2 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map2, perturbed_nodes2)
+
+#     name_of_perturbation1 = "perturb node(s) {}".format(','.join(perturbed_nodes1))
+#     name_of_perturbation2 = "perturb node(s) {}".format(','.join(perturbed_nodes2))
+#     # Create x values (indices)
+#     x1 = range(len(max_weights1))
+#     x2 = range(len(max_weights2))
+
+#     # Find the segment with the largest decrease
+#     max_drop1 = 0
+#     max_segment1 = (0, 1)  # Indices of the segment with the largest drop
+#     for i in range(1, len(max_weights1)):
+#         drop1 = max_weights1[i - 1] - max_weights1[i]
+#         if drop1 > max_drop1:
+#             max_drop1 = drop1
+#             max_segment1 = (i - 1, i)
+    
+#     max_drop2 = 0
+#     max_segment2 = (0, 1)  # Indices of the segment with the largest drop
+#     for i in range(1, len(max_weights2)):
+#         drop2 = max_weights2[i - 1] - max_weights2[i]
+#         if drop2 > max_drop2:
+#             max_drop2 = drop2
+#             max_segment2 = (i - 1, i)
+
+#     # Create the plot
+#     plt.figure(figsize=(8, 6))
+
+#     # Plot the first line graph
+#     plt.plot(x1, max_weights1, marker='o', linestyle='--', color='blue', label=name_of_perturbation1)
+
+#     # Highlight the segment with the largest drop
+#     start_idx, end_idx = max_segment1
+#     plt.plot(
+#         [start_idx, end_idx],
+#         [max_weights1[start_idx], max_weights1[end_idx]],
+#         color="red",
+#         linewidth=3,
+#         label=f"Largest drop in {name_of_perturbation1}: {max_drop1:.2f}",
+#     )
+
 def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_perturbation,
-                                                          profile_after_perturbation1, profile_after_perturbation2,
-                                                          perturbed_nodes1, perturbed_nodes2):
-    linkswithpositiveedgeweight_edgeweight_map1 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation1)
-    linkswithpositiveedgeweight_edgeweight_map2 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation2)
+                                                          profile_after_perturbation,
+                                                          perturbed_nodes):
+    linkswithpositiveedgeweight_edgeweight_map = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation)
+    
+    max_weights = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map, perturbed_nodes)
 
-    max_weights1 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map1, perturbed_nodes1)
-    max_weights2 = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map2, perturbed_nodes2)
+    name_of_perturbation = "perturb node(s) {}".format(','.join(perturbed_nodes))
 
-    name_of_perturbation1 = "perturb node(s) {}".format(','.join(perturbed_nodes1))
-    name_of_perturbation2 = "perturb node(s) {}".format(','.join(perturbed_nodes2))
     # Create x values (indices)
-    x1 = range(len(max_weights1))
-    x2 = range(len(max_weights2))
+    x = range(len(max_weights))
+
+    max_weights_len_is_longer_than_1 = len(max_weights) > 1
+
+    # Find the segment with the largest decrease
+    if max_weights_len_is_longer_than_1:
+        max_drop = 0
+        max_segment = (0, 1)  # Indices of the segment with the largest drop
+        for i in range(1, len(max_weights)):
+            drop = max_weights[i - 1] - max_weights[i]
+            if drop > max_drop:
+                max_drop = drop
+                max_segment = (i - 1, i)
+
 
     # Create the plot
     plt.figure(figsize=(8, 6))
 
     # Plot the first line graph
-    plt.plot(x1, max_weights1, marker='o', linestyle='-', color='blue', label=name_of_perturbation1)
+    plt.plot(x, max_weights, marker='o', linestyle='--', color='blue', label=name_of_perturbation)
 
-    # Plot the second line graph
-    plt.plot(x2, max_weights2, marker='s', linestyle='--', color='red', label=name_of_perturbation2)
+    # Highlight the segment with the largest drop
+    if max_weights_len_is_longer_than_1:
+        start_idx, end_idx = max_segment
+        plt.plot(
+            [start_idx, end_idx],
+            [max_weights[start_idx], max_weights[end_idx]],
+            color="red",
+            linewidth=3,
+            label=f"Largest drop in {name_of_perturbation}: {max_drop:.2f}",
+        )
 
     # Add labels and title
     plt.xlabel("Depth", fontsize=12)
     plt.ylabel("Max edge weight", fontsize=12)
-    plt.title("Comparison of Max edge weights \nfor drug and combination target", fontsize=16)
+    plt.title("Comparison of Max edge weights \nfor {}".format(name_of_perturbation), fontsize=16)
 
     # Add legend
     plt.legend(fontsize=12)
@@ -99,15 +165,69 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
 
     
 
-def show_edgeweights_of_edges_connecting_phenotype_and_regulators(phenotype_nodes:set,
-                                                                link_edgeweight_map):
-    print("regulator\tsign\tphenotype_node\tedge_weight")
+# def show_edgeweights_of_edges_connecting_phenotype_and_regulators(phenotype_nodes:set,
+#                                                                 link_edgeweight_map):
+#     print("regulator\tsign\tphenotype_node\tedge_weight")
+#     for link, edge_weight in link_edgeweight_map.items():
+#         target_node = link[-1]
+#         if target_node in phenotype_nodes:
+#             regulator_node = link[0]
+#             sign = link[1]
+#             print("{:>9}\t{:>4}\t{:>14}\t{:>11.5f}".format(regulator_node, str(sign), target_node, edge_weight))
+
+def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, link_edgeweight_map):
+    values = []
     for link, edge_weight in link_edgeweight_map.items():
         target_node = link[-1]
         if target_node in phenotype_nodes:
-            regulator_node = link[0]
-            sign = link[1]
-            print("{:>9}\t{:>4}\t{:>14}\t{:>11.5f}".format(regulator_node, str(sign), target_node, edge_weight))
+            values.append(edge_weight)
+
+    # Sort the values in descending order
+    sorted_values = sorted(values, reverse=True)
+
+    # Create x values (indices)
+    x = range(len(sorted_values))
+
+    len_of_sorted_values_is_longer_than_1 = len(sorted_values) > 1
+
+    # Find the segment with the largest decrease
+    if len_of_sorted_values_is_longer_than_1:
+        max_drop = 0
+        max_segment = (0, 1)  # Indices of the segment with the largest drop
+        for i in range(1, len(sorted_values)):
+            drop = sorted_values[i - 1] - sorted_values[i]
+            if drop > max_drop:
+                max_drop = drop
+                max_segment = (i - 1, i)
+
+    # Plot the line graph
+    plt.figure(figsize=(8, 6))
+    plt.plot(x, sorted_values, marker="o", linestyle="--", color="blue", label="Edge weights")
+
+    # Highlight the segment with the largest drop
+    if len_of_sorted_values_is_longer_than_1:
+        start_idx, end_idx = max_segment
+        plt.plot(
+            [start_idx, end_idx],
+            [sorted_values[start_idx], sorted_values[end_idx]],
+            color="red",
+            linewidth=3,
+            label=f"Largest drop: {max_drop:.2f}",
+        )
+
+    # Add labels and title
+    plt.xlabel("Edges connecting regulators and phenotypes, \nsorted in descending order by edge weight values.", fontsize=12)
+    plt.ylabel("Edge weight between regulator and phenotype", fontsize=12)
+    plt.title("Line Graph with Highlighted Largest Drop", fontsize=16)
+
+    # Add legend
+    plt.legend(fontsize=12)
+
+    # Add grid
+    plt.grid(True, linestyle="--", alpha=0.7)
+
+    # Show the plot
+    plt.show()
 
 def select_significant_regulators_for_phenotype_nodes(phenotype_nodes:set,
                                                       link_edgeweight_map,

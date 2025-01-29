@@ -54,6 +54,41 @@ def _convert_links_in_cycle(cycle, links_map):
         cycle_new.append(link_with_sign)
     return tuple(cycle_new)    
 
+# def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_map, max_len=None, feedback_score_threshold=0):
+#     """links_edgeweight_map is dictionary 
+#     whose key is link having positive edge weight and value is edge weight of the link.
+
+#     find all cycles whose length is less than or equal to max_len.
+#     if max_len is None, find all cycles.
+
+#     among found feedbacks, 
+#     select feedbacks having feedback score higher than threshold and return them"""
+#     links_map = {(x[0],x[-1]):x for x in links_edgeweight_map}
+#     links_to_check = list(links_map)
+#     all_nodes = set()
+#     for link in links_to_check:
+#         all_nodes.add(link[0])
+#         all_nodes.add(link[-1])
+
+#     feedback_collector = Feedbacks_over_feedback_score_threshold(links_edgeweight_map.copy(), feedback_score_threshold)
+    
+#     while all_nodes:
+#         node_selected = all_nodes.pop()
+
+#         calculator = Find_cycles_containing_the_node(node_selected, links_to_check)
+#         cycles = calculator.find_cycles(algorithm="simple", max_len=max_len, return_node_form=False)
+#         for cycle in cycles:
+#             cycle_with_signs = _convert_links_in_cycle(cycle, links_map)
+#             feedback_collector.put_new_feedback(cycle_with_signs)
+
+#         links_to_check = [link for link in links_to_check if node_selected not in link]
+#         all_nodes = set()
+#         for link in links_to_check:
+#             all_nodes.add(link[0])
+#             all_nodes.add(link[-1])
+    
+#     return feedback_collector
+
 def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_map, max_len=None, feedback_score_threshold=0):
     """links_edgeweight_map is dictionary 
     whose key is link having positive edge weight and value is edge weight of the link.
@@ -62,7 +97,28 @@ def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_m
     if max_len is None, find all cycles.
 
     among found feedbacks, 
-    select feedbacks having feedback score higher than threshold and return them"""
+    select feedbacks having feedback score higher than threshold and return them
+    
+    
+    이것은 리비전 동안만 사용하기 위해 pickle 기능을 넣은 함수.
+    특정 max_len 값에 대해, 나온 결과를 저장하고, 다음 리비전에서는 저장된 결과를 불러와서 사용할 수 있도록 함."""
+
+    import pickle
+    import os
+    import time
+    time_now = time.time()
+    pickle_file_name = "feedbacks_with_max_len_{}.pickle".format(str(max_len))
+    pickle_address = os.path.join(r"D:\LG화학 project\논문 작성\241223 GPB 1차 revision\tmp_data_erasable_feedback_collectors_pickles", pickle_file_name)
+    if os.path.exists(pickle_address):
+        print("pickle file found. loading feedbacks from the pickle file")
+        flag=True
+        with open(pickle_address, 'rb') as f:
+            node_cycles_map = pickle.load(f)
+    else:
+        print("no pickle file found. calculating feedbacks from scratch")
+        flag=False
+        node_cycles_map = {}
+
     links_map = {(x[0],x[-1]):x for x in links_edgeweight_map}
     links_to_check = list(links_map)
     all_nodes = set()
@@ -74,9 +130,17 @@ def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_m
     
     while all_nodes:
         node_selected = all_nodes.pop()
+        print("calculating feedbacks containing node: ", node_selected)
+        print("the time taken until now: ", time.time()-time_now)
 
-        calculator = Find_cycles_containing_the_node(node_selected, links_to_check)
-        cycles = calculator.find_cycles(algorithm="simple", max_len=max_len, return_node_form=False)
+        
+        if flag == True:
+            cycles = node_cycles_map[node_selected]
+        else:
+            calculator = Find_cycles_containing_the_node(node_selected, links_to_check)
+            cycles = calculator.find_cycles(algorithm="simple", max_len=max_len, return_node_form=False)
+            node_cycles_map[node_selected] = cycles
+        
         for cycle in cycles:
             cycle_with_signs = _convert_links_in_cycle(cycle, links_map)
             feedback_collector.put_new_feedback(cycle_with_signs)
@@ -87,6 +151,10 @@ def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_m
             all_nodes.add(link[0])
             all_nodes.add(link[-1])
     
+    if not flag:
+        with open(pickle_address, 'wb') as f:
+            pickle.dump(node_cycles_map, f)
+    print("time taken for feedback calculation: ", time.time()-time_now)
     return feedback_collector
 
 class Feedbacks_over_feedback_score_threshold:
