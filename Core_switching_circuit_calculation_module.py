@@ -147,6 +147,14 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
             linewidth=3,
             label=f"Largest drop in {name_of_perturbation}: {max_drop:.2f}",
         )
+    
+    # Add text labels for each point
+    for i in range(len(x)):
+        plt.text(
+            x[i], max_weights[i],
+            f"{max_weights[i]:.3f}", 
+            fontsize=10, ha="center", color="black"
+        )
 
     # Add labels and title
     plt.xlabel("Depth", fontsize=12)
@@ -212,7 +220,15 @@ def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, 
             [sorted_values[start_idx], sorted_values[end_idx]],
             color="red",
             linewidth=3,
-            label=f"Largest drop: {max_drop:.2f}",
+            label=f"Largest drop: {max_drop:.3f}",
+        )
+
+    # Add text labels for each point
+    for i in range(len(x)):
+        plt.text(
+            x[i], sorted_values[i],
+            f"{sorted_values[i]:.3f}", 
+            fontsize=10, ha="center", color="black"
         )
 
     # Add labels and title
