@@ -187,8 +187,10 @@ def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, 
     values = []
     for link, edge_weight in link_edgeweight_map.items():
         target_node = link[-1]
+        regulator = link[0]
         if target_node in phenotype_nodes:
-            values.append(edge_weight)
+            if regulator not in phenotype_nodes:
+                values.append(edge_weight)
 
     # Sort the values in descending order
     sorted_values = sorted(values, reverse=True)
@@ -251,10 +253,11 @@ def select_significant_regulators_for_phenotype_nodes(phenotype_nodes:set,
     significant_regulators = set()
     for link, edge_weight in link_edgeweight_map.items():
         target_node = link[-1]
+        regulator_node = link[0]
         if target_node in phenotype_nodes:
-            if edge_weight > edgeweight_threshold:
-                regulator_node = link[0]
-                significant_regulators.add(regulator_node)
+            if regulator_node not in phenotype_nodes:
+                if edge_weight > edgeweight_threshold:
+                    significant_regulators.add(regulator_node)
 
     return significant_regulators
         
