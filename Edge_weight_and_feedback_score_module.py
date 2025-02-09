@@ -1,5 +1,8 @@
 import bisect
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 from Ftb_calculation_module import calculate_Ftb_of_feedback
 from Cycle_analysis import Find_cycles_containing_the_node
 
@@ -9,6 +12,56 @@ def get_links_with_positive_edge_weight(links, profile_before_perturb, profile_a
     and value is the edge weight of the link"""
     average_node_activity_difference = Average_node_activity_difference(profile_before_perturb, profile_after_perturb)
     return average_node_activity_difference.filter_links_with_edge_weight_positive(links)
+
+def plot_histogram_and_pdf_of_positive_edge_weights(links_positiveedgeweight_map, bins=10):
+    """
+    Plot a histogram and probability density function (PDF) for values in a given dictionary.
+
+    Parameters:
+    - links_positiveedgeweight_map (dict): A dictionary where values are floating-point numbers between 0 and 1.
+    - bins (int): Number of bins for the histogram (default is 10).
+
+    The function displays:
+    1. A histogram showing the distribution of values.
+    2. A probability density function (PDF) estimated using a normalized histogram.
+    """
+    # Extract values from the dictionary
+    values = np.array(list(links_positiveedgeweight_map.values()))
+
+    # Compute percentiles (90%, 80%, ..., 10%)
+    percentiles = [np.percentile(values, p) for p in range(90, 0, -10)]
+
+    # Create histogram data (density=True normalizes the histogram to represent a probability distribution)
+    hist_values, bin_edges = np.histogram(values, bins=bins, density=True)
+
+    # Compute bin centers for smooth PDF plotting
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # Plot the histogram
+    plt.figure(figsize=(8, 6))
+    plt.bar(bin_centers, hist_values, width=(bin_edges[1] - bin_edges[0]), alpha=0.6, color="blue", label="Histogram")
+
+    # Plot the probability density function (PDF)
+    plt.plot(bin_centers, hist_values, marker="o", linestyle="-", color="red", label="Estimated PDF")
+
+    # Annotate percentiles on the x-axis
+    for p, x_val in zip(range(90, 0, -10), percentiles):
+        plt.axvline(x_val, color="gray", linestyle="--", alpha=0.7)
+        plt.text(x_val, max(hist_values) * 0.9, f"{p}%", fontsize=10, rotation=90, verticalalignment="top")
+
+    # Add labels and title
+    plt.xlabel("edge weight", fontsize=12)
+    plt.ylabel("Density", fontsize=12)
+    plt.title("Histogram and Estimated PDF\nof positive edge weights", fontsize=14)
+
+    # Add legend
+    plt.legend(fontsize=12)
+
+    # Show grid
+    plt.grid(True, linestyle="--", alpha=0.7)
+
+    # Display the plot
+    plt.show()
 
 class Average_node_activity_difference:
     def __init__(self, profile_before_perturb, profile_after_perturb):
@@ -135,7 +188,10 @@ def get_feedbacks_having_feedback_score_higher_than_threshold(links_edgeweight_m
 
         
         if flag == True:
-            cycles = node_cycles_map[node_selected]
+            if node_selected in node_cycles_map:
+                cycles = node_cycles_map[node_selected]
+            else:
+                continue
         else:
             calculator = Find_cycles_containing_the_node(node_selected, links_to_check)
             cycles = calculator.find_cycles(algorithm="simple", max_len=max_len, return_node_form=False)
