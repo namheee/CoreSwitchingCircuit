@@ -45,13 +45,23 @@ After setting up the command file, run `main.py` with the first argument as the 
 python3 main.py command_file_address
 ```
 
-각 IPR의 parameter 정하는 이야기,
-significant phenotype의 parameter 정하는 이야기
-feedback score의 threshold 정하는 이야기.
-feedback 길이 제한 정하는 이야기.
-이 파트는 parameter comment 쓴 다음에 쓰자.
+### Required Parameters  
+
+The following parameters are required to run this algorithm:  
+
+- **Threshold for the initially perturbed region of the drug target**  
+- **Threshold for the initially perturbed region of the combination target**  
+- **Threshold for the feedback score**  
+- **Threshold for significant regulator determination**  
+- **Maximum feedback length to search**  
+
+When executing `main.py` with Python, a command-line interface (CLI) prompts the user to enter each parameter.  
+During this process, **matplotlib-based figures** will **pop up**, providing useful references for parameter selection.  
+
+For details on how to determine each parameter and utilize the displayed figures, please refer to **Supplementary XX** of the paper.  
 
 
+### Output Format
 An example of the output is as follows: 
 
 ```
