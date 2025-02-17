@@ -61,6 +61,8 @@ def find_downstream_nodes_and_max_edge_weights(edges_dict, start_nodes):
 # def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_perturbation,
 #                                                           profile_after_perturbation1, profile_after_perturbation2,
 #                                                           perturbed_nodes1, perturbed_nodes2):
+#     """this function shows the max edge weights for each individual target perturbation
+#     simultaneously, on the same figure."""
 #     linkswithpositiveedgeweight_edgeweight_map1 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation1)
 #     linkswithpositiveedgeweight_edgeweight_map2 = get_links_with_positive_edge_weight(links, profile_before_perturbation, profile_after_perturbation2)
 
@@ -132,7 +134,7 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
 
 
     # Create the plot
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(10, 8))
 
     # Plot the first line graph
     plt.plot(x, max_weights, marker='o', linestyle='--', color='blue', label=name_of_perturbation)
@@ -162,7 +164,7 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
     plt.title("Comparison of Max edge weights \nfor {}".format(name_of_perturbation), fontsize=16)
 
     # Add legend
-    plt.legend(fontsize=12)
+    plt.legend(fontsize=8)
 
     # Add grid
     plt.grid(True, linestyle='--', alpha=0.7)
@@ -170,18 +172,6 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
     # Show the plot
     plt.show()
 
-
-    
-
-# def show_edgeweights_of_edges_connecting_phenotype_and_regulators(phenotype_nodes:set,
-#                                                                 link_edgeweight_map):
-#     print("regulator\tsign\tphenotype_node\tedge_weight")
-#     for link, edge_weight in link_edgeweight_map.items():
-#         target_node = link[-1]
-#         if target_node in phenotype_nodes:
-#             regulator_node = link[0]
-#             sign = link[1]
-#             print("{:>9}\t{:>4}\t{:>14}\t{:>11.5f}".format(regulator_node, str(sign), target_node, edge_weight))
 
 def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, link_edgeweight_map, combi_target=""):
     values = []
@@ -239,7 +229,7 @@ def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, 
     plt.title("Edge weights between regulator and phenotype {}".format(combi_target), fontsize=16)
 
     # Add legend
-    plt.legend(fontsize=12)
+    plt.legend(fontsize=8)
 
     # Add grid
     plt.grid(True, linestyle="--", alpha=0.7)

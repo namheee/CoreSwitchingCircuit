@@ -102,6 +102,8 @@ def calculate_core_switching_circuit(argv):
     max_len = int(input())
     if max_len == 0:
         max_len = None #calculate all possible feedback lengths
+
+    print("\n\nThe core switching circuit search will begin.")
     
 
     feedback_collector = get_feedbacks_having_feedback_score_higher_than_threshold(links_positiveedgeweight_map, max_len, threshold_for_feedback_score)
