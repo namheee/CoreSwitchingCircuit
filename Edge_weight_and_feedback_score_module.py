@@ -13,7 +13,7 @@ def get_links_with_positive_edge_weight(links, profile_before_perturb, profile_a
     average_node_activity_difference = Average_node_activity_difference(profile_before_perturb, profile_after_perturb)
     return average_node_activity_difference.filter_links_with_edge_weight_positive(links)
 
-def plot_histogram_and_pdf_of_positive_edge_weights(links_positiveedgeweight_map, bins=10):
+def plot_histogram_and_pdf_of_positive_edge_weights(links_positiveedgeweight_map, bins=10,combi_target=""):
     """
     Plot a histogram and probability density function (PDF) for values in a given dictionary.
 
@@ -50,9 +50,9 @@ def plot_histogram_and_pdf_of_positive_edge_weights(links_positiveedgeweight_map
         plt.text(x_val, max(hist_values) * 0.9, f"{p}%", fontsize=10, rotation=90, verticalalignment="top")
 
     # Add labels and title
-    plt.xlabel("edge weight", fontsize=12)
-    plt.ylabel("Density", fontsize=12)
-    plt.title("Histogram and Estimated PDF\nof positive edge weights", fontsize=14)
+    plt.xlabel("Edge weight", fontsize=12)
+    plt.ylabel("Probability density", fontsize=12)
+    plt.title("Histogram and Estimated PDF\nof positive edge weights {}".format(combi_target), fontsize=14)
 
     # Add legend
     plt.legend(fontsize=12)

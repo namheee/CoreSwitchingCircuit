@@ -113,7 +113,7 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
     
     max_weights = find_downstream_nodes_and_max_edge_weights(linkswithpositiveedgeweight_edgeweight_map, perturbed_nodes)
 
-    name_of_perturbation = "perturb node(s) {}".format(','.join(perturbed_nodes))
+    name_of_perturbation = "Initially perturbed node(s) by {}".format(','.join(perturbed_nodes))
 
     # Create x values (indices)
     x = range(len(max_weights))
@@ -145,7 +145,7 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
             [max_weights[start_idx], max_weights[end_idx]],
             color="red",
             linewidth=3,
-            label=f"Largest drop in {name_of_perturbation}: {max_drop:.2f}",
+            label=f"The most negative derivative in {name_of_perturbation}: {-1*max_drop:.2f}",
         )
     
     # Add text labels for each point
@@ -183,7 +183,7 @@ def trace_max_edge_weights_for_initially_perturbed_region(links, profile_before_
 #             sign = link[1]
 #             print("{:>9}\t{:>4}\t{:>14}\t{:>11.5f}".format(regulator_node, str(sign), target_node, edge_weight))
 
-def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, link_edgeweight_map):
+def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, link_edgeweight_map, combi_target=""):
     values = []
     for link, edge_weight in link_edgeweight_map.items():
         target_node = link[-1]
@@ -222,7 +222,7 @@ def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, 
             [sorted_values[start_idx], sorted_values[end_idx]],
             color="red",
             linewidth=3,
-            label=f"Largest drop: {max_drop:.3f}",
+            label=f"The most negative derivative: {-1*max_drop:.3f}",
         )
 
     # Add text labels for each point
@@ -235,8 +235,8 @@ def visualize_largest_decrease_in_edge_weight_across_depth(phenotype_nodes:set, 
 
     # Add labels and title
     plt.xlabel("Edges connecting regulators and phenotypes, \nsorted in descending order by edge weight values.", fontsize=12)
-    plt.ylabel("Edge weight between regulator and phenotype", fontsize=12)
-    plt.title("Line Graph with Highlighted Largest Drop", fontsize=16)
+    plt.ylabel("Edge weight", fontsize=12)
+    plt.title("Edge weights between regulator and phenotype {}".format(combi_target), fontsize=16)
 
     # Add legend
     plt.legend(fontsize=12)

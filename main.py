@@ -89,6 +89,9 @@ def calculate_core_switching_circuit(argv):
     print("Using a smaller value increases the accuracy of the analysis,")
     print("but choosing a value that is too low may lead to insufficient memory for the computation.")
     print("It is recommended to use the threshold value employed to distinguish significant regulators.")
+    
+    plot_histogram_and_pdf_of_positive_edge_weights(links_positiveedgeweight_map)
+    print("The generated figure displays the distribution of edge weights.")
     threshold_for_feedback_score = float(input())
 
     
