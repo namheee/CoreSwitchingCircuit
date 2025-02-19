@@ -1,7 +1,7 @@
 # Core Switching Circuit
-This is the supporting code to the paper titled **NetCF : A network control-based framework to reveals the molecular mechanism of phenotype switching in lung cancer cells**
+This is the supporting code to the paper titled **NetCF : A network control-based framework to reveal the molecular mechanism of phenotype switching in lung cancer cells**
 
-The Core Switching Circuit algorithm is a part of the NetCF framework. It identifies the essential circuit through which the effects of a specific drug and its combination target propagate. This helps analyze the mechanism by which the drug and combination target act on cells. For the front part of the NetCF framework, please refer to [NetCF](https://github.com/namheee/NetCF).  
+The Core Switching Circuit algorithm is a part of the NetCF. It identifies the essential circuit that explains the effects when a specific drug and its combination target are regulated simultaneously. This facilitates the analysis of the molecular mechanism by which the drug and its combination target act on cells. For the front part of the NetCF framework, please refer to [NetCF](https://github.com/namheee/NetCF).  
 
 
 ## Installation
@@ -91,7 +91,7 @@ feedback score of the feedback:0.6584334002226464
 
 Here, the **initially perturbed region (IPR)** represents the union of the IPRs of the drug and the combination target.  
 
-During the construction of the **core switching circuit**, the **Perturbation-Propagated Region (PPR)** is iteratively expanded. In the output above, the **i-th step** corresponds to the information when the PPR has been expanded for the **i-th time**.  
+During the identification of the **core switching circuit**, the **Perturbation-Propagated Region (PPR)** is iteratively expanded. In the output above, the **i-th step** corresponds to the information when the PPR has been expanded for the **i-th time**.  
 
 - **PPR**: The expanded **Perturbation-Propagated Region** at the **i-th step**.  
 - **Ftb of the feedback**: The **Feedback Transition-Barrier (Ftb)** value calculated for the feedback added at the **i-th step**. A **higher Ftb value** indicates that the activation of this feedback is more difficult.  
